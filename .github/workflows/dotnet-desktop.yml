@@ -4,7 +4,7 @@
 # documentation.
 
 # This workflow will build, test, sign and paname: Build and Test C# Project (Framework 4.7.2)
-
+name: Build and Test C# Project (Framework 4.7.2)
 
 on:
   workflow_dispatch:
