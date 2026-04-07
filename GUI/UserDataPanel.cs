@@ -14,7 +14,7 @@ public class UserDataPanel
     private static UserData _player1 = null;
     private static UserData _player2 = null;
     private static bool _isNewItem = false;
-    
+
     private enum CollectionType
     {
         Icon = UserData.Collection.Icon,
@@ -23,9 +23,9 @@ public class UserDataPanel
         Partner = UserData.Collection.Partner,
         Frame = UserData.Collection.Frame
     }
-    
-    private static string[] _userInputId = ["", "", "", "", "", "", ""];
-    
+
+    private static string[] _userInputId = ["", "", "", "", "", "", "", "", "", ""];
+
     public static void OnGUI()
     {
         GUILayout.Label($"User Info", MainGUI.Style.Title);
@@ -36,19 +36,18 @@ public class UserDataPanel
         }
         catch (Exception e)
         {
-            // ignore
         }
         GUILayout.Label($"1P: {_player1.Detail.UserName} ({_player1.Detail.UserID})", MainGUI.Style.Text);
         GUILayout.Label($"2P: {_player2.Detail.UserName} ({_player2.Detail.UserID})", MainGUI.Style.Text);
-        
+
         GUILayout.Label("Add Collections", MainGUI.Style.Title);
         foreach (CollectionType type in Enum.GetValues(typeof(CollectionType)))
         {
             GUILayout.BeginHorizontal();
             int typeId = (int)type;
-            GUILayout.Label(type.ToString(), new GUIStyle(MainGUI.Style.Text){fixedWidth = 50});
+            GUILayout.Label(type.ToString(), new GUIStyle(MainGUI.Style.Text) { fixedWidth = 50 });
             _userInputId[typeId] = GUILayout.TextField(_userInputId[typeId]);
-            if (GUILayout.Button("Add", new GUIStyle(MainGUI.Style.Button){ fixedWidth = 50}))
+            if (GUILayout.Button("Add", new GUIStyle(MainGUI.Style.Button) { fixedWidth = 50 }))
             {
                 AddCollections(0, type, _userInputId[typeId]);
                 AddCollections(1, type, _userInputId[typeId]);
@@ -56,35 +55,57 @@ public class UserDataPanel
             GUILayout.EndHorizontal();
         }
         _isNewItem = GUILayout.Toggle(_isNewItem, "Is New Item");
-        
+
         GUILayout.Label("Unlock Music", MainGUI.Style.Title);
         GUILayout.BeginHorizontal();
-        GUILayout.Label("Music", new GUIStyle(MainGUI.Style.Text){fixedWidth = 50});
+        GUILayout.Label("Music", new GUIStyle(MainGUI.Style.Text) { fixedWidth = 50 });
         _userInputId[0] = GUILayout.TextField(_userInputId[0]);
-        if (GUILayout.Button("Add", new GUIStyle(MainGUI.Style.Button){ fixedWidth = 50}))
+        if (GUILayout.Button("Add", new GUIStyle(MainGUI.Style.Button) { fixedWidth = 50 }))
         {
             UnlockMusic(0, _userInputId[0]);
             UnlockMusic(1, _userInputId[0]);
         }
         GUILayout.EndHorizontal();
-        
+
         GUILayout.Label("MaiMile", MainGUI.Style.Title);
         GUILayout.BeginHorizontal();
-        GUILayout.Label("MaiMile", new GUIStyle(MainGUI.Style.Text){fixedWidth = 50});
+        GUILayout.Label("MaiMile", new GUIStyle(MainGUI.Style.Text) { fixedWidth = 50 });
         _userInputId[6] = GUILayout.TextField(_userInputId[6]);
-        if (GUILayout.Button("Add", new GUIStyle(MainGUI.Style.Button){ fixedWidth = 50}))
+        if (GUILayout.Button("Add", new GUIStyle(MainGUI.Style.Button) { fixedWidth = 50 }))
         {
             AddMaiMile(0, _userInputId[6]);
             AddMaiMile(1, _userInputId[6]);
         }
         GUILayout.EndHorizontal();
-        
+
+        GUILayout.Label("Kaleidx Scope", MainGUI.Style.Title);
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Gate", new GUIStyle(MainGUI.Style.Text) { fixedWidth = 50 });
+        _userInputId[7] = GUILayout.TextField(_userInputId[7]);
+        if (GUILayout.Button("Add", new GUIStyle(MainGUI.Style.Button) { fixedWidth = 50 }))
+        {
+            AddKaleidxScopeGate(0, _userInputId[7]);
+            AddKaleidxScopeGate(1, _userInputId[7]);
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Key", new GUIStyle(MainGUI.Style.Text) { fixedWidth = 50 });
+        _userInputId[8] = GUILayout.TextField(_userInputId[8]);
+        if (GUILayout.Button("Add", new GUIStyle(MainGUI.Style.Button) { fixedWidth = 50 }))
+        {
+            AddKaleidxScopeKey(0, _userInputId[8]);
+            AddKaleidxScopeKey(1, _userInputId[8]);
+        }
+        GUILayout.EndHorizontal();
+
         GUILayout.Label("User Data Backup", MainGUI.Style.Title);
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("1P", MainGUI.Style.Button)) User.ExportBackupData(0);
         if (GUILayout.Button("2P", MainGUI.Style.Button)) User.ExportBackupData(1);
         GUILayout.EndHorizontal();
-        
+
     }
 
     private static void AddCollections(long index, CollectionType type, string input)
@@ -92,7 +113,7 @@ public class UserDataPanel
         UserData userData = Singleton<UserDataManager>.Instance.GetUserData(index);
         if (userData.IsGuest())
         {
-            GameMessageManager.SendMessage((int)index,"Guest Account\nUnable to add collections");
+            GameMessageManager.SendMessage((int)index, "Guest Account\nUnable to add collections");
             return;
         }
         try
@@ -101,21 +122,21 @@ public class UserDataPanel
             {
                 if (userData.AddCollections((UserData.Collection)type, id, _isNewItem))
                 {
-                    GameMessageManager.SendMessage((int)index,$"Add Collections \n{type} {id}" + (_isNewItem ? " (New Item)" : "") );
+                    GameMessageManager.SendMessage((int)index, $"Add Collections \n{type} {id}" + (_isNewItem ? " (New Item)" : ""));
                 }
                 else
                 {
-                    GameMessageManager.SendMessage((int)index,$"Failed to add Collections or already added\n{type} {id}");
+                    GameMessageManager.SendMessage((int)index, $"Failed to add Collections or already added\n{type} {id}");
                 }
             }
             else
             {
-                GameMessageManager.SendMessage((int)index,$"Invalid ID\n {input}");
+                GameMessageManager.SendMessage((int)index, $"Invalid ID\n {input}");
             }
         }
         catch (Exception e)
         {
-            GameMessageManager.SendMessage((int)index,$"Unknown error");
+            GameMessageManager.SendMessage((int)index, $"Unknown error");
             MelonLogger.Error(e);
         }
     }
@@ -125,7 +146,7 @@ public class UserDataPanel
         UserData userData = Singleton<UserDataManager>.Instance.GetUserData(index);
         if (userData.IsGuest())
         {
-            GameMessageManager.SendMessage((int)index,"Guest Account\nUnable to unlock music");
+            GameMessageManager.SendMessage((int)index, "Guest Account\nUnable to unlock music");
             return;
         }
         try
@@ -136,32 +157,32 @@ public class UserDataPanel
                 {
                     if (userData.AddUnlockMusic(UserData.MusicUnlock.Base, id))
                     {
-                        GameMessageManager.SendMessage((int)index,$"Unlock Music \n{id}");
+                        GameMessageManager.SendMessage((int)index, $"Unlock Music \n{id}");
                     }
                     else
                     {
-                        GameMessageManager.SendMessage((int)index,$"Failed to unlock music or already unlocked \n{id}");
+                        GameMessageManager.SendMessage((int)index, $"Failed to unlock music or already unlocked \n{id}");
                     }
                 }
-                else if(!userData.IsUnlockMusic(UserData.MusicUnlock.Master, id))
+                else if (!userData.IsUnlockMusic(UserData.MusicUnlock.Master, id))
                 {
                     userData.AddUnlockMusic(UserData.MusicUnlock.Master, id);
                     userData.AddUnlockMusic(UserData.MusicUnlock.ReMaster, id);
-                    GameMessageManager.SendMessage((int)index,$"Unlock Master \n{id}");
+                    GameMessageManager.SendMessage((int)index, $"Unlock Master \n{id}");
                 }
                 else
                 {
-                    GameMessageManager.SendMessage((int)index,$"Failed to unlock Master or already unlocked\n{id}");
+                    GameMessageManager.SendMessage((int)index, $"Failed to unlock Master or already unlocked\n{id}");
                 }
             }
             else
             {
-                GameMessageManager.SendMessage((int)index,$"Invalid ID\n {input}");
+                GameMessageManager.SendMessage((int)index, $"Invalid ID\n {input}");
             }
         }
         catch (Exception e)
         {
-            GameMessageManager.SendMessage((int)index,$"Unknown error");
+            GameMessageManager.SendMessage((int)index, $"Unknown error");
             MelonLogger.Error(e);
         }
     }
@@ -171,34 +192,88 @@ public class UserDataPanel
         UserData userData = Singleton<UserDataManager>.Instance.GetUserData(index);
         if (SinmaiAssist.GameVersion < 25000)
         {
-            GameMessageManager.SendMessage((int)index,"MaiMile is not supported in this version");
+            GameMessageManager.SendMessage((int)index, "MaiMile is not supported in this version");
             return;
         }
         if (userData.IsGuest())
         {
-            GameMessageManager.SendMessage((int)index,"Guest Account\nUnable to add MaiMile");
+            GameMessageManager.SendMessage((int)index, "Guest Account\nUnable to add MaiMile");
             return;
         }
         try
         {
-            if (int.TryParse(input , out int addMile))
+            if (int.TryParse(input, out int addMile))
             {
                 var haveMile = userData.Detail.Point;
                 if (haveMile + addMile >= 99999)
                     addMile = 99999 - haveMile;
                 var addMileBefore = haveMile + addMile;
-                
+
                 userData.AddPresentMile(addMile);
-                GameMessageManager.SendMessage((int)index,$"Add {addMile} MaiMile\n ({haveMile} -> {addMileBefore})");
+                GameMessageManager.SendMessage((int)index, $"Add {addMile} MaiMile\n ({haveMile} -> {addMileBefore})");
             }
             else
             {
-                GameMessageManager.SendMessage((int)index,$"Invalid MaiMile\n {input}");
+                GameMessageManager.SendMessage((int)index, $"Invalid MaiMile\n {input}");
             }
         }
         catch (Exception e)
         {
-            GameMessageManager.SendMessage((int)index,$"Unknown error");
+            GameMessageManager.SendMessage((int)index, $"Unknown error");
+            MelonLogger.Error(e);
+        }
+    }
+
+    private static void AddKaleidxScopeGate(long index, string input)
+    {
+        UserData userData = Singleton<UserDataManager>.Instance.GetUserData(index);
+        if (userData.IsGuest())
+        {
+            GameMessageManager.SendMessage((int)index, "Guest Account\nUnable to add Gate");
+            return;
+        }
+        try
+        {
+            if (int.TryParse(input, out int id))
+            {
+                userData.AddKaleidxScopeGate(id);
+                GameMessageManager.SendMessage((int)index, $"Add Kaleidx Scope Gate \n{id}");
+            }
+            else
+            {
+                GameMessageManager.SendMessage((int)index, $"Invalid ID\n {input}");
+            }
+        }
+        catch (Exception e)
+        {
+            GameMessageManager.SendMessage((int)index, $"Unknown error");
+            MelonLogger.Error(e);
+        }
+    }
+
+    private static void AddKaleidxScopeKey(long index, string input)
+    {
+        UserData userData = Singleton<UserDataManager>.Instance.GetUserData(index);
+        if (userData.IsGuest())
+        {
+            GameMessageManager.SendMessage((int)index, "Guest Account\nUnable to add Key");
+            return;
+        }
+        try
+        {
+            if (int.TryParse(input, out int id))
+            {
+                userData.AddKaleidxScopeKey(id);
+                GameMessageManager.SendMessage((int)index, $"Add Kaleidx Scope Key \n{id}");
+            }
+            else
+            {
+                GameMessageManager.SendMessage((int)index, $"Invalid ID\n {input}");
+            }
+        }
+        catch (Exception e)
+        {
+            GameMessageManager.SendMessage((int)index, $"Unknown error");
             MelonLogger.Error(e);
         }
     }
